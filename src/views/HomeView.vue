@@ -16,7 +16,7 @@
                         <li>Clear Filter</li>
                     </ul>
                 </div>
-                <div @click="newInvoice" class="flex button">
+                <div @click="newInvoice" class="flex button button--teal">
                     <div class="inner-button flex">
                         <img src="../assets/icon-plus.svg" alt="" />
                     </div>
@@ -94,35 +94,5 @@ export default {
 img {
     width: 2rem;
     height: 1.5rem;
-}
-
-.button {
-    padding: 1em;
-    border-radius: 40px;
-
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-
-    cursor: pointer;
-
-    background-color: var(--color-primary);
-}
-
-.inner-button {
-    border-radius: 50%;
-    background-color: var(--color-secondary);
-    padding: 0.6em;
-
-    align-items: center;
-    justify-content: center;
-}
-
-.inner-button img {
-    width: 1.2rem;
-    height: 1.2rem;
-}
-
-@media (min-width: 900px) {
 }
 </style>

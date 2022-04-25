@@ -3,10 +3,10 @@
 :root {
   --color-bg: hsl(212, 14%, 19%);
   --color-bg-dark: hsl(212, 14%, 13%);
-  --color-primary: hsl(179, 35%, 36%);
+  --color-primary: #3c7c7b;
   --color-secondary: hsl(176, 56%, 55%);
-  --color-additional: hsl(0, 100%, 71%);
-  --color-font: hsl(120, 100%, 98%);
+  --color-additional: #ff6b6b;
+  --color-font: #f5fff5;
 }
 
 *,
