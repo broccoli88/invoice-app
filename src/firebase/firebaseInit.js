@@ -3,6 +3,7 @@ import { getFirestore } from "firebase/firestore/lite";
 
 const firebaseConfig = {
   authDomain: "invoice-vue-app-5b8cb.firebaseapp.com",
+  APIKey: "",
   projectId: "invoice-vue-app-5b8cb",
   storageBucket: "invoice-vue-app-5b8cb.appspot.com",
   messagingSenderId: "183675821511",
