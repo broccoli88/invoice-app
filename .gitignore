@@ -14,7 +14,7 @@ dist-ssr
 coverage
 *.local
 
-firebase/
+/firebase/
 /cypress/videos/
 /cypress/screenshots/
 
