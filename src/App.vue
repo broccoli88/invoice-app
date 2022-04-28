@@ -1,11 +1,12 @@
 <template>
-    <div v-if="!mobile">
-        <div class="wrapper flex-column">
-            <NavBar />
-            <div class="app-content flex-column">
-                <RouterView />
-                <InvoiceModal />
-            </div>
+    <div v-if="!mobile" class="app wrapper flex-column">
+        <NavBar />
+        <div class="app-content flex-column">
+            <Modal v-if="store.modalActive" />
+            <transition name="invoice">
+                <InvoiceModal v-if="store.newInvoice" />
+            </transition>
+            <RouterView />
         </div>
     </div>
     <div v-else class="mobile-message flex-column flex-center">
@@ -15,24 +16,31 @@
 </template>
 
 <script>
+import Modal from "./components/Modal.vue";
 import NavBar from "./components/NavBar.vue";
 import InvoiceModal from "./components/InvoiceModal.vue";
 import { RouterLink, RouterView } from "vue-router";
+import { useCounterStore } from "./stores/counter";
+import { mapActions } from "pinia";
 
 export default {
-    components: { NavBar, InvoiceModal },
+    components: { NavBar, InvoiceModal, Modal },
     data() {
         return {
             mobile: true,
+            store: useCounterStore(),
         };
     },
 
     created() {
+        this.getInvoices();
         this.checkScreen();
         window.addEventListener("resize", this.checkScreen);
     },
 
     methods: {
+        ...mapActions(useCounterStore, ["getInvoices"]),
+
         checkScreen() {
             const windowWidth = window.innerWidth;
 
@@ -101,24 +109,9 @@ export default {
     cursor: pointer;
 }
 
-.inner-button {
-    border-radius: 50%;
-    background-color: var(--color-secondary);
-    padding: 0.6em;
-
-    align-items: center;
-    justify-content: center;
-}
-
-.inner-button img {
-    width: 1.2rem;
-    height: 1.2rem;
-}
-
 .button--teal {
     background-color: var(--color-primary);
 }
-
 .button--red {
     background-color: crimson;
 }
@@ -129,6 +122,19 @@ export default {
 
 .button--black {
     background-color: black;
+}
+
+/* Add Invoice toggle animation */
+
+.invoice-enter-from,
+.invoice-leave-to {
+    transform: translateX(-700px);
+    opacity: 0.2;
+}
+
+.invoice-enter-active,
+.invoice-leave-active {
+    transition: 0.8s ease all;
 }
 
 @media (min-width: 900px) {

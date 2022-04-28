@@ -1,6 +1,8 @@
 <template>
-    <div @click="checkClick" ref="invoiceWrap" class="invoice-wrap flex-column">
+    <div class="invoice-wrap flex-column" @click="checkClick" ref="invoiceWrap">
         <form class="invoice-content" @submit.prevent="submitForm">
+            <Loading v-show="loading" />
+
             <h1>New Invoice</h1>
 
             <!-- BILL FROM -->
@@ -116,6 +118,7 @@
                     <div class="input flex-column">
                         <label for="invoiceDate">Invoice Date</label>
                         <input
+                            disabled
                             type="text"
                             id="invoiceDate"
                             v-model="invoiceDate"
@@ -125,6 +128,7 @@
                     <div class="input flex-column">
                         <label for="paymentDueDate">Payment Due</label>
                         <input
+                            disabled
                             type="text"
                             id="paymentDueDate"
                             v-model="paymentDueDate"
@@ -134,12 +138,7 @@
                 </div>
                 <div class="input flex-column">
                     <label for="paymentTerms">Payment Terms</label>
-                    <select
-                        type="text"
-                        id="paymentTerms"
-                        v-model="paymentTerms"
-                        required
-                    >
+                    <select id="paymentTerms" v-model="paymentTerms" required>
                         <option value="30">Net 30 Days</option>
                         <option value="60">Net 60 Days</option>
                     </select>
@@ -177,7 +176,7 @@
                                 <input type="text" v-model="item.price" />
                             </td>
                             <td class="total flex">
-                                <input type="text" v-model="item.total" />
+                                $ {{ (item.total = item.qty * item.price) }}
                             </td>
                             <img
                                 @click="deleteInvoiceItem(item.id)"
@@ -201,15 +200,24 @@
 
             <div class="save flex">
                 <div class="left">
-                    <button class="button button--red" @click="closeInvoice">
+                    <button
+                        type="button"
+                        class="button button--red"
+                        @click="store.toggleNewInvoice"
+                    >
                         Cancel
                     </button>
                 </div>
                 <div class="right flex">
-                    <button class="button button--black" @click="saveDraft">
+                    <button
+                        type="submit"
+                        class="button button--black"
+                        @click="saveDraft"
+                    >
                         Save Draft
                     </button>
                     <button
+                        type="submit"
                         class="button button--orange"
                         @click="publishInvoice"
                     >
@@ -222,10 +230,19 @@
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import { useCounterStore } from "../stores/counter";
+import { uid } from "uid";
+import { collection, setDoc, addDoc } from "firebase/firestore/lite";
+import db from "../firebase/firebaseInit";
+import Loading from "./Loading.vue";
+
 export default {
     name: "InvoiceModal",
+    components: { Loading },
     data() {
         return {
+            store: useCounterStore(),
             dateOptions: { year: "numeric", month: "short", day: "numeric" },
             docId: null,
             loading: null,
@@ -251,18 +268,129 @@ export default {
             invoiceTotal: 0,
         };
     },
+
+    created() {
+        // Invoice Date
+
+        this.invoiceDateUnix = Date.now();
+        this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+            "en-us",
+            this.dateOptions
+        );
+    },
+
+    methods: {
+        ...mapActions(useCounterStore, ["toggleModal", "toggleNewInvoice"]),
+
+        checkClick(e) {
+            if (e.target === this.$refs.invoiceWrap) {
+                this.toggleModal();
+            }
+        },
+
+        addNewInvoiceItem() {
+            this.invoiceItemList.push({
+                id: uid(),
+                itemName: "",
+                qty: 0,
+                price: 0,
+                total: 0,
+            });
+        },
+
+        deleteInvoiceItem(id) {
+            this.invoiceItemList = this.invoiceItemList.filter(
+                (item) => item.id !== id
+            );
+        },
+
+        saveDraft() {
+            this.invoiceDraft = true;
+        },
+
+        publishInvoice() {
+            this.invoicePending = true;
+        },
+
+        calcInvoiceTotal() {
+            this.invoiceTotal = 0;
+            this.invoiceItemList.forEach((item) => {
+                this.invoiceTotal += item.total;
+            });
+        },
+
+        async uploadInvoice() {
+            if (this.invoiceItemList.length <= 0) {
+                alert("You have to fill in all the brackets first!");
+                return;
+            }
+
+            this.loading = true;
+
+            this.calcInvoiceTotal();
+
+            const colRef = await collection(db, "invoices");
+            const dataObj = {
+                invoiceId: uid(6),
+                billerStreetAddress: this.billerStreetAddress,
+                billerCity: this.billerCity,
+                billerZipCode: this.billerZipCode,
+                billerCountry: this.billerCountry,
+                clientName: this.clientName,
+                clientEmail: this.clientEmail,
+                clientStreetAddress: this.clientStreetAddress,
+                clientCity: this.clientCity,
+                clientZipCode: this.clientZipCode,
+                clientCountry: this.clientCountry,
+                invoiceDate: this.invoiceDate,
+                invoiceDateUnix: this.invoiceDateUnix,
+                paymentTerms: this.paymentTerms,
+                paymentDueDate: this.paymentDueDate,
+                paymentDueDateUnix: this.paymentDueDateUnix,
+                productDescription: this.productDescription,
+                invoiceItemList: this.invoiceItemList,
+                invoiceTotal: this.invoiceTotal,
+                invoicePending: this.invoicePending,
+                invoiceDraft: this.invoiceDraft,
+                invoicePaid: null,
+            };
+
+            const docRef = await addDoc(colRef, dataObj);
+
+            this.loading = false;
+
+            this.store.toggleNewInvoice();
+        },
+
+        submitForm() {
+            this.uploadInvoice();
+        },
+    },
+
+    watch: {
+        paymentTerms() {
+            const futureDate = new Date();
+            this.paymentDueDateUnix = futureDate.setDate(
+                futureDate.getDate() + parseFloat(this.paymentTerms)
+            );
+            this.paymentDueDate = new Date(
+                this.paymentDueDateUnix
+            ).toLocaleDateString("en-us", this.dateOptions);
+        },
+    },
 };
 </script>
 
-<style>
+<style scoped>
 .invoice-wrap {
+    /* max-width: 700px; */
+    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     background-color: transparent;
-    width: 100%;
     height: 100vh;
-    /* overflow: scroll; */
+    z-index: 10;
 }
 
 .invoice-wrap h1 {
@@ -273,7 +401,7 @@ export default {
 .invoice-wrap h3 {
     margin-bottom: 16px;
     font-size: 1.8rem;
-    color: #777198;
+    color: var(--color-additional);
 }
 
 .invoice-wrap h4 {
@@ -283,10 +411,10 @@ export default {
 }
 
 .invoice-content {
+    width: 100%;
+    max-width: 700px;
     position: relative;
     padding: 56px;
-    max-width: 700px;
-    width: 100%;
     height: 100vh;
     background-color: var(--color-secondary);
     color: #fff;
@@ -303,7 +431,6 @@ export default {
 .location-details {
     gap: 12px;
 }
-
 .location-details > div {
     flex: 1;
 }
@@ -332,6 +459,17 @@ export default {
     font-size: 12px;
 }
 
+.table-items {
+    max-width: 700px;
+    margin-bottom: 18px;
+    align-items: center;
+}
+
+.table-items img {
+    width: 15px;
+    height: 20px;
+}
+
 .table-heading {
     margin-bottom: 16px;
 }
@@ -356,6 +494,14 @@ export default {
     flex-basis: 20%;
     align-self: center;
 }
+
+/* .total--style {
+    border-radius: 4px;
+    background-color: var(--color-primary);
+    height: 38.52px;
+    display: flex;
+    align-items: center;
+} */
 
 .input {
     margin-bottom: 24px;

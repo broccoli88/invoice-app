@@ -16,7 +16,10 @@
                         <li>Clear Filter</li>
                     </ul>
                 </div>
-                <div @click="newInvoice" class="flex button button--teal">
+                <div
+                    @click="store.toggleNewInvoice"
+                    class="flex button button--teal"
+                >
                     <div class="inner-button flex">
                         <img src="../assets/icon-plus.svg" alt="" />
                     </div>
@@ -29,18 +32,20 @@
 
 
 <script>
+import { useCounterStore } from "../stores/counter";
+// const store = useCounterStore()
+
 export default {
     name: "Home",
 
     data() {
         return {
             filterMenu: null,
+            store: useCounterStore(),
         };
     },
 
     methods: {
-        newInvoice() {},
-
         toggleFilterMenu() {
             this.filterMenu = !this.filterMenu;
         },
@@ -91,8 +96,14 @@ export default {
     filter: brightness(130%);
 }
 
-img {
-    width: 2rem;
-    height: 1.5rem;
+.inner-button {
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+    padding: 0.6em;
+}
+
+.inner-button > img {
+    width: 1.2rem;
+    height: 1.2rem;
 }
 </style>
