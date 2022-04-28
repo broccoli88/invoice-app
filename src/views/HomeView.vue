@@ -33,7 +33,6 @@
 
 <script>
 import { useCounterStore } from "../stores/counter";
-// const store = useCounterStore()
 
 export default {
     name: "Home",
