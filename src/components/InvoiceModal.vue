@@ -3,7 +3,8 @@
         <form class="invoice-content" @submit.prevent="submitForm">
             <Loading v-show="loading" />
 
-            <h1>New Invoice</h1>
+            <h1 v-if="!store.editInvoice">New Invoice</h1>
+            <h1 v-else>Edit Invoice</h1>
 
             <!-- BILL FROM -->
 
@@ -203,13 +204,14 @@
                     <button
                         type="button"
                         class="button button--red"
-                        @click="store.toggleNewInvoice"
+                        @click="closeNewInvoice"
                     >
                         Cancel
                     </button>
                 </div>
                 <div class="right flex">
                     <button
+                        v-if="!store.editInvoice"
                         type="submit"
                         class="button button--black"
                         @click="saveDraft"
@@ -217,11 +219,20 @@
                         Save Draft
                     </button>
                     <button
+                        v-if="!store.editInvoice"
                         type="submit"
                         class="button button--orange"
                         @click="publishInvoice"
                     >
                         Create Invoice
+                    </button>
+
+                    <button
+                        v-if="store.editInvoice"
+                        type="submit"
+                        class="button button--orange"
+                    >
+                        Update Invoice
                     </button>
                 </div>
             </div>
@@ -233,7 +244,7 @@
 import { mapActions } from "pinia";
 import { useCounterStore } from "../stores/counter";
 import { uid } from "uid";
-import { collection, setDoc, addDoc } from "firebase/firestore/lite";
+import { collection, updateDoc, addDoc, doc } from "firebase/firestore/lite";
 import db from "../firebase/firebaseInit";
 import Loading from "./Loading.vue";
 
@@ -271,16 +282,53 @@ export default {
 
     created() {
         // Invoice Date
+        if (!this.store.editInvoice) {
+            this.invoiceDateUnix = Date.now();
+            this.invoiceDate = new Date(
+                this.invoiceDateUnix
+            ).toLocaleDateString("en-us", this.dateOptions);
+        }
 
-        this.invoiceDateUnix = Date.now();
-        this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
-            "en-us",
-            this.dateOptions
-        );
+        if (this.store.editInvoice) {
+            const currentInvoice = this.store.currentInvoiceArray[0];
+            this.docId = currentInvoice.docId;
+            this.billerStreetAddress = currentInvoice.billerStreetAddress;
+            this.billerCity = currentInvoice.billerCity;
+            this.billerZipCode = currentInvoice.billerZipCode;
+            this.billerCountry = currentInvoice.billerCountry;
+            this.clientName = currentInvoice.clientName;
+            this.clientEmail = currentInvoice.clientEmail;
+            this.clientStreetAddress = currentInvoice.clientStreetAddress;
+            this.clientCity = currentInvoice.clientCity;
+            this.clientZipCode = currentInvoice.clientZipCode;
+            this.clientCountry = currentInvoice.clientCountry;
+            this.invoiceDateUnix = currentInvoice.invoiceDateUnix;
+            this.invoiceDate = currentInvoice.invoiceDate;
+            this.paymentTerms = currentInvoice.paymentTerms;
+            this.paymentDueDateUnix = currentInvoice.paymentDueDateUnix;
+            this.paymentDueDate = currentInvoice.paymentDueDate;
+            this.productDescription = currentInvoice.productDescription;
+            this.invoicePending = currentInvoice.invoicePending;
+            this.invoiceDraft = currentInvoice.invoiceDraft;
+            this.invoiceItemList = currentInvoice.invoiceItemList;
+            this.invoiceTotal = currentInvoice.invoiceTotal;
+        }
     },
 
     methods: {
-        ...mapActions(useCounterStore, ["toggleModal", "toggleNewInvoice"]),
+        ...mapActions(useCounterStore, [
+            "toggleModal",
+            "toggleNewInvoice",
+            "toggleEditInvoice",
+            "updateInvoice",
+        ]),
+
+        closeNewInvoice() {
+            this.toggleNewInvoice();
+            if (this.store.editInvoice) {
+                this.toggleEditInvoice();
+            }
+        },
 
         checkClick(e) {
             if (e.target === this.$refs.invoiceWrap) {
@@ -359,10 +407,56 @@ export default {
 
             this.loading = false;
 
-            this.store.toggleNewInvoice();
+            this.toggleNewInvoice();
+        },
+
+        async updateInvoice() {
+            if (this.invoiceItemList.length <= 0) {
+                alert("You have to fill in all the brackets first!");
+                return;
+            }
+
+            this.loading = true;
+
+            this.calcInvoiceTotal();
+
+            const invoiceRef = doc(db, "invoices", this.docId);
+
+            const dataObj = {
+                billerStreetAddress: this.billerStreetAddress,
+                billerCity: this.billerCity,
+                billerZipCode: this.billerZipCode,
+                billerCountry: this.billerCountry,
+                clientName: this.clientName,
+                clientEmail: this.clientEmail,
+                clientStreetAddress: this.clientStreetAddress,
+                clientCity: this.clientCity,
+                clientZipCode: this.clientZipCode,
+                clientCountry: this.clientCountry,
+                paymentTerms: this.paymentTerms,
+                paymentDueDate: this.paymentDueDate,
+                paymentDueDateUnix: this.paymentDueDateUnix,
+                productDescription: this.productDescription,
+                invoiceItemList: this.invoiceItemList,
+                invoiceTotal: this.invoiceTotal,
+            };
+
+            await updateDoc(invoiceRef, dataObj);
+            this.loading = false;
+
+            const data = {
+                docId: this.docId,
+                routeId: this.$route.params.invoiceId,
+            };
+
+            this.updateInvoice(data);
         },
 
         submitForm() {
+            if (this.store.editInvoice) {
+                this.updateInvoice();
+                return;
+            }
             this.uploadInvoice();
         },
     },

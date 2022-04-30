@@ -10,6 +10,7 @@ export const useCounterStore = defineStore({
     modalActive: null,
     dataLoaded: null,
     currentInvoiceArray: null,
+    editInvoice: null,
   }),
 
   actions: {
@@ -70,6 +71,24 @@ export const useCounterStore = defineStore({
         }
       });
       this.invoicesLoaded();
+    },
+
+    deleteInvoice(payload) {
+      this.invoiceData = this.invoiceData.filter((invoice) => {
+        invoice.docId !== payload;
+      });
+    },
+
+    async updateInvoice({ docId, routeId }) {
+      this.deleteInvoice(docId);
+      await this.getInvoices();
+      this.toggleNewInvoice();
+      this.toggleEditInvoice();
+      this.setCurrentInvoice(routeId);
+    },
+
+    toggleEditInvoice() {
+      this.editInvoice = !this.editInvoice;
     },
   },
 });

@@ -22,9 +22,18 @@ import { useCounterStore } from "../stores/counter";
 
 export default {
     name: "modal",
+    data() {
+        return {
+            store: useCounterStore(),
+        };
+    },
 
     methods: {
-        ...mapActions(useCounterStore, ["toggleModal", "toggleNewInvoice"]),
+        ...mapActions(useCounterStore, [
+            "toggleModal",
+            "toggleNewInvoice",
+            "toggleEditInvoice",
+        ]),
 
         closeModal() {
             this.toggleModal();
@@ -33,6 +42,9 @@ export default {
         closeInvoice() {
             this.toggleModal();
             this.toggleNewInvoice();
+            if (this.store.editInvoice) {
+                this.toggleEditInvoice();
+            }
         },
     },
 };

@@ -36,10 +36,7 @@
                 </div>
             </div>
             <div class="right flex">
-                <button
-                    @click="toggleEditInvoice(currentInvoice.docId)"
-                    class="button button--black"
-                >
+                <button @click="editInvoice" class="button button--black">
                     Edit
                 </button>
                 <button
@@ -149,11 +146,20 @@ export default {
     },
 
     methods: {
-        ...mapActions(useCounterStore, ["setCurrentInvoice"]),
+        ...mapActions(useCounterStore, [
+            "setCurrentInvoice",
+            "toggleEditInvoice",
+            "toggleNewInvoice",
+        ]),
 
         getCurrentInvoice() {
             this.setCurrentInvoice(this.$route.params.invoiceId);
             this.currentInvoice = this.store.currentInvoiceArray[0];
+        },
+
+        editInvoice() {
+            this.toggleEditInvoice();
+            this.toggleNewInvoice();
         },
     },
 };
