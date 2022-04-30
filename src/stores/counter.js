@@ -9,6 +9,7 @@ export const useCounterStore = defineStore({
     newInvoice: null,
     modalActive: null,
     dataLoaded: null,
+    currentInvoiceArray: null,
   }),
 
   actions: {
@@ -18,6 +19,12 @@ export const useCounterStore = defineStore({
 
     toggleModal() {
       this.modalActive = !this.modalActive;
+    },
+
+    setCurrentInvoice(payload) {
+      this.currentInvoiceArray = this.invoiceData.filter((invoice) => {
+        return invoice.invoiceId === payload;
+      });
     },
 
     setInvoiceData(payload) {
@@ -30,9 +37,9 @@ export const useCounterStore = defineStore({
 
     async getInvoices() {
       const q = query(collection(db, "invoices"));
-      const snapshot = await getDocs(q);
+      const querySnapshot = await getDocs(q);
 
-      snapshot.forEach((doc) => {
+      querySnapshot.forEach((doc) => {
         if (!this.invoiceData.some((invoice) => invoice.docId === doc.id)) {
           const data = {
             docId: doc.id,
@@ -62,7 +69,6 @@ export const useCounterStore = defineStore({
           this.setInvoiceData(data);
         }
       });
-
       this.invoicesLoaded();
     },
   },

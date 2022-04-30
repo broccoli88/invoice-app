@@ -1,5 +1,7 @@
 <template>
     <div class="home container">
+        <!-- HEADER -->
+
         <div class="header flex">
             <div class="left flex-column">
                 <h1>Invoices</h1>
@@ -27,16 +29,35 @@
                 </div>
             </div>
         </div>
+
+        <!-- Invoices -->
+
+        <div v-if="store.invoiceData.length > 0">
+            <Invoice
+                v-for="(invoice, index) in store.invoiceData"
+                :key="index"
+                :invoice="invoice"
+            />
+        </div>
+        <div v-else class="empty flex-column flex-center">
+            <img src="../assets/illustration-empty.svg" alt="" />
+            <h3>Ther is nothing here</h3>
+            <p>
+                Create a new invoice by clicking the New Invoice button and get
+                started.
+            </p>
+        </div>
     </div>
 </template>
 
 
 <script>
+import Invoice from "../components/Invoice.vue";
 import { useCounterStore } from "../stores/counter";
 
 export default {
     name: "Home",
-
+    components: { Invoice },
     data() {
         return {
             filterMenu: null,
@@ -104,5 +125,18 @@ export default {
 .inner-button > img {
     width: 1.2rem;
     height: 1.2rem;
+}
+
+.empty {
+    height: 55vh;
+}
+
+.empty img {
+    width: 214px;
+    height: 200px;
+}
+
+.empty h3 {
+    margin-top: 3rem;
 }
 </style>

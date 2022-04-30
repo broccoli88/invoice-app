@@ -1,17 +1,19 @@
 <template>
-    <div v-if="!mobile" class="app wrapper flex-column">
-        <NavBar />
-        <div class="app-content flex-column">
-            <Modal v-if="store.modalActive" />
-            <transition name="invoice">
-                <InvoiceModal v-if="store.newInvoice" />
-            </transition>
-            <RouterView />
+    <div v-if="store.dataLoaded">
+        <div v-if="!mobile" class="app wrapper flex-column">
+            <NavBar />
+            <div class="app-content flex-column">
+                <Modal v-if="store.modalActive" />
+                <transition name="invoice">
+                    <InvoiceModal v-if="store.newInvoice" />
+                </transition>
+                <RouterView />
+            </div>
         </div>
-    </div>
-    <div v-else class="mobile-message flex-column flex-center">
-        <h2>Sorry, this app is not supported on Mobile Devices</h2>
-        <p>To use this app, use tablet or computer.</p>
+        <div v-else class="mobile-message flex-column flex-center">
+            <h2>Sorry, this app is not supported on Mobile Devices</h2>
+            <p>To use this app, use tablet or computer.</p>
+        </div>
     </div>
 </template>
 
@@ -95,10 +97,22 @@ export default {
     gap: 2rem;
 }
 
+.nav-link {
+    width: fit-content;
+    align-items: center;
+    text-decoration: none;
+}
+
+.icon {
+    width: 12px;
+    height: 16px;
+}
+
 .button {
     padding: 1em;
     border-radius: 40px;
     color: var(--color-font);
+    font-weight: 500;
     /* width: 10em; */
 
     align-items: center;
@@ -107,6 +121,32 @@ export default {
     border: 0;
 
     cursor: pointer;
+}
+
+.status-button {
+    width: 10em;
+
+    padding: 0.2em 1.5em;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.status-button-state {
+    margin: 0;
+}
+
+.pending {
+    background-color: hsl(39, 100%, 45%);
+}
+
+.paid {
+    background-color: crimson;
+}
+
+.draft {
+    background-color: black;
 }
 
 .button--teal {
