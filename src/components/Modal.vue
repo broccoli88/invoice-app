@@ -30,20 +30,20 @@ export default {
 
     methods: {
         ...mapActions(useCounterStore, [
-            "toggleModal",
-            "toggleNewInvoice",
-            "toggleEditInvoice",
+            "TOGGLE_MODAL",
+            "TOGGLE_NEW_INVOICE",
+            "TOGGLE_EDIT_INVOICE",
         ]),
 
         closeModal() {
-            this.toggleModal();
+            this.TOGGLE_MODAL();
         },
 
         closeInvoice() {
-            this.toggleModal();
-            this.toggleNewInvoice();
+            this.TOGGLE_MODAL();
+            this.TOGGLE_NEW_INVOICE();
             if (this.store.editInvoice) {
-                this.toggleEditInvoice();
+                this.TOGGLE_EDIT_INVOICE();
             }
         },
     },

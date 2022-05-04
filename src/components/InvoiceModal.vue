@@ -317,22 +317,22 @@ export default {
 
     methods: {
         ...mapActions(useCounterStore, [
-            "toggleModal",
-            "toggleNewInvoice",
-            "toggleEditInvoice",
-            "updateInvoice",
+            "TOGGLE_MODAL",
+            "TOGGLE_NEW_INVOICE",
+            "TOGGLE_EDIT_INVOICE",
+            "UPDATE_INVOICE",
         ]),
 
         closeNewInvoice() {
-            this.toggleNewInvoice();
+            this.TOGGLE_NEW_INVOICE();
             if (this.store.editInvoice) {
-                this.toggleEditInvoice();
+                this.TOGGLE_EDIT_INVOICE();
             }
         },
 
         checkClick(e) {
             if (e.target === this.$refs.invoiceWrap) {
-                this.toggleModal();
+                this.TOGGLE_MODAL();
             }
         },
 
@@ -376,7 +376,6 @@ export default {
             this.loading = true;
 
             this.calcInvoiceTotal();
-
             const colRef = await collection(db, "invoices");
             const dataObj = {
                 invoiceId: uid(6),
@@ -407,10 +406,10 @@ export default {
 
             this.loading = false;
 
-            this.toggleNewInvoice();
+            this.TOGGLE_NEW_INVOICE();
         },
 
-        async updateInvoice() {
+        async changeInvoice() {
             if (this.invoiceItemList.length <= 0) {
                 alert("You have to fill in all the brackets first!");
                 return;
@@ -449,12 +448,12 @@ export default {
                 routeId: this.$route.params.invoiceId,
             };
 
-            this.updateInvoice(data);
+            this.UPDATE_INVOICE(data);
         },
 
         submitForm() {
             if (this.store.editInvoice) {
-                this.updateInvoice();
+                this.changeInvoice();
                 return;
             }
             this.uploadInvoice();

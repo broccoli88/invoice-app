@@ -19,7 +19,7 @@
                     </ul>
                 </div>
                 <div
-                    @click="store.toggleNewInvoice"
+                    @click="store.TOGGLE_NEW_INVOICE"
                     class="flex button button--teal"
                 >
                     <div class="inner-button flex">

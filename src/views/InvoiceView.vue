@@ -130,7 +130,7 @@
 
 <script>
 import { useCounterStore } from "../stores/counter";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 
 export default {
     name: "invoiceView",
@@ -147,19 +147,31 @@ export default {
 
     methods: {
         ...mapActions(useCounterStore, [
-            "setCurrentInvoice",
-            "toggleEditInvoice",
-            "toggleNewInvoice",
+            "SET_CURRENT_INVOICE",
+            "TOGGLE_EDIT_INVOICE",
+            "TOGGLE_NEW_INVOICE",
         ]),
 
         getCurrentInvoice() {
-            this.setCurrentInvoice(this.$route.params.invoiceId);
+            this.SET_CURRENT_INVOICE(this.$route.params.invoiceId);
             this.currentInvoice = this.store.currentInvoiceArray[0];
         },
 
         editInvoice() {
-            this.toggleEditInvoice();
-            this.toggleNewInvoice();
+            this.TOGGLE_EDIT_INVOICE();
+            this.TOGGLE_NEW_INVOICE();
+        },
+    },
+
+    computed: {
+        // ...mapState(useCounterStore, ["currentInvoiceArray", "editInvoice"]
+    },
+
+    watch: {
+        checkEditInvoice() {
+            if (!this.editInvoice) {
+                this.currentInvoice = this.currentInvoiceArray[0];
+            }
         },
     },
 };

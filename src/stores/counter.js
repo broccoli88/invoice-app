@@ -14,25 +14,25 @@ export const useCounterStore = defineStore({
   }),
 
   actions: {
-    toggleNewInvoice() {
+    TOGGLE_NEW_INVOICE() {
       this.newInvoice = !this.newInvoice;
     },
 
-    toggleModal() {
+    TOGGLE_MODAL() {
       this.modalActive = !this.modalActive;
     },
 
-    setCurrentInvoice(payload) {
+    SET_CURRENT_INVOICE(payload) {
       this.currentInvoiceArray = this.invoiceData.filter((invoice) => {
         return invoice.invoiceId === payload;
       });
     },
 
-    setInvoiceData(payload) {
+    SET_INVOICE_DATA(payload) {
       this.invoiceData.push(payload);
     },
 
-    invoicesLoaded() {
+    INVOICES_LOADED() {
       this.dataLoaded = true;
     },
 
@@ -67,27 +67,27 @@ export const useCounterStore = defineStore({
             invoiceDraft: doc.data().invoiceDraft,
             invoicePaid: doc.data().invoicePaid,
           };
-          this.setInvoiceData(data);
+          this.SET_INVOICE_DATA(data);
         }
       });
-      this.invoicesLoaded();
+      this.INVOICES_LOADED();
     },
 
-    deleteInvoice(payload) {
+    DELETE_INVOICE(payload) {
       this.invoiceData = this.invoiceData.filter((invoice) => {
         invoice.docId !== payload;
       });
     },
 
-    async updateInvoice({ docId, routeId }) {
-      this.deleteInvoice(docId);
+    async UPDATE_INVOICE({ docId, routeId }) {
+      this.DELETE_INVOICE(docId);
       await this.getInvoices();
-      this.toggleNewInvoice();
-      this.toggleEditInvoice();
-      this.setCurrentInvoice(routeId);
+      this.TOGGLE_NEW_INVOICE();
+      this.TOGGLE_EDIT_INVOICE();
+      this.SET_CURRENT_INVOICE(routeId);
     },
 
-    toggleEditInvoice() {
+    TOGGLE_EDIT_INVOICE() {
       this.editInvoice = !this.editInvoice;
     },
   },
