@@ -1,5 +1,12 @@
 import { defineStore } from "pinia";
-import { collection, doc, getDocs, query } from "firebase/firestore/lite";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+} from "firebase/firestore/lite";
 import db from "../firebase/firebaseInit";
 
 export const useCounterStore = defineStore({
@@ -89,6 +96,13 @@ export const useCounterStore = defineStore({
 
     TOGGLE_EDIT_INVOICE() {
       this.editInvoice = !this.editInvoice;
+    },
+
+    async REMOVE_INVOICE(docId) {
+      const docRef = await doc(db, "invoices", docId);
+      const getInvoice = await deleteDoc(docRef);
+
+      this.DELETE_INVOICE(docId);
     },
   },
 });

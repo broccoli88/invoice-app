@@ -150,6 +150,7 @@ export default {
             "SET_CURRENT_INVOICE",
             "TOGGLE_EDIT_INVOICE",
             "TOGGLE_NEW_INVOICE",
+            "REMOVE_INVOICE",
         ]),
 
         getCurrentInvoice() {
@@ -161,16 +162,18 @@ export default {
             this.TOGGLE_EDIT_INVOICE();
             this.TOGGLE_NEW_INVOICE();
         },
-    },
 
-    computed: {
-        // ...mapState(useCounterStore, ["currentInvoiceArray", "editInvoice"]
+        async deleteInvoice(docId) {
+            await this.REMOVE_INVOICE(docId);
+
+            this.$router.push({ name: "home" });
+        },
     },
 
     watch: {
-        checkEditInvoice() {
-            if (!this.editInvoice) {
-                this.currentInvoice = this.currentInvoiceArray[0];
+        "store.editInvoice"(NewValue) {
+            if (!NewValue) {
+                this.currentInvoice = this.store.currentInvoiceArray[0];
             }
         },
     },
