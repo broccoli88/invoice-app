@@ -321,6 +321,7 @@ export default {
             "TOGGLE_NEW_INVOICE",
             "TOGGLE_EDIT_INVOICE",
             "UPDATE_INVOICE",
+            "GET_INVOICES",
         ]),
 
         closeNewInvoice() {
@@ -407,6 +408,8 @@ export default {
             this.loading = false;
 
             this.TOGGLE_NEW_INVOICE();
+
+            this.GET_INVOICES();
         },
 
         async changeInvoice() {

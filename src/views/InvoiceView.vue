@@ -47,7 +47,7 @@
                 </button>
                 <button
                     v-if="currentInvoice.invoicePending"
-                    @click="updateStatusToPadi(currentInvoice.docId)"
+                    @click="updateStatusToPaid(currentInvoice.docId)"
                     class="green button button--orange"
                 >
                     Mark as Paid
@@ -151,6 +151,8 @@ export default {
             "TOGGLE_EDIT_INVOICE",
             "TOGGLE_NEW_INVOICE",
             "REMOVE_INVOICE",
+            "UPDATE_INVOICE_STATUS_TO_PAID",
+            "UPDATE_INVOICE_STATUS_TO_PENDING",
         ]),
 
         getCurrentInvoice() {
@@ -167,6 +169,14 @@ export default {
             await this.REMOVE_INVOICE(docId);
 
             this.$router.push({ name: "home" });
+        },
+
+        updateStatusToPaid(docId) {
+            this.UPDATE_INVOICE_STATUS_TO_PAID(docId);
+        },
+
+        updateStatusToPending(docId) {
+            this.UPDATE_INVOICE_STATUS_TO_PENDING(docId);
         },
     },
 

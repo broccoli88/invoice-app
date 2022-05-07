@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   query,
+  updateDoc,
 } from "firebase/firestore/lite";
 import db from "../firebase/firebaseInit";
 
@@ -19,6 +20,27 @@ export const useCounterStore = defineStore({
     currentInvoiceArray: null,
     editInvoice: null,
   }),
+
+  getters: {
+    UPDATE_STATUS_TO_PAID: (state, payload) => {
+      state.invoiceData.forEach((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = true;
+          invoice.invoicePending = false;
+        }
+      });
+    },
+
+    UPDATE_STATUS_TO_PENDING: (state, payload) => {
+      state.invoiceData.forEach((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = false;
+          invoice.invoicePending = true;
+          invoice.invoiceDraft = false;
+        }
+      });
+    },
+  },
 
   actions: {
     TOGGLE_NEW_INVOICE() {
@@ -99,10 +121,30 @@ export const useCounterStore = defineStore({
     },
 
     async REMOVE_INVOICE(docId) {
-      const docRef = await doc(db, "invoices", docId);
+      const docRef = doc(db, "invoices", docId);
       const getInvoice = await deleteDoc(docRef);
 
-      this.DELETE_INVOICE(docId);
+      this.REMOVE_INVOICE(docId);
+    },
+
+    async UPDATE_INVOICE_STATUS_TO_PAID(docId) {
+      const docRef = doc(db, "invoices", docId);
+      await updateDoc(docRef, {
+        invoicePaid: true,
+        invoicePending: false,
+      });
+      this.UPDATE_INVOICE_STATUS_TO_PAID(docId);
+    },
+
+    async UPDATE_INVOICE_STATUS_TO_PENDING(docId) {
+      const docRef = doc(db, "invoices", docId);
+      await updateDoc(docRef, {
+        invoicePaid: false,
+        invoicePending: true,
+        invoiceDraft: false,
+      });
+
+      this.UPDATE_INVOICE_STATUS_TO_PENDING(docId);
     },
   },
 });
