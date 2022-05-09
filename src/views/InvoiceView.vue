@@ -57,7 +57,7 @@
                         currentInvoice.invoiceDraft ||
                         currentInvoice.invoicePaid
                     "
-                    @click="updateStatusToPending"
+                    @click="updateStatusToPending(currentInvoice.docId)"
                     class="orange"
                 >
                     Mark as Pending
@@ -130,7 +130,7 @@
 
 <script>
 import { useCounterStore } from "../stores/counter";
-import { mapActions, mapState } from "pinia";
+import { mapActions } from "pinia";
 
 export default {
     name: "invoiceView",
@@ -147,12 +147,12 @@ export default {
 
     methods: {
         ...mapActions(useCounterStore, [
-            "SET_CURRENT_INVOICE",
             "TOGGLE_EDIT_INVOICE",
             "TOGGLE_NEW_INVOICE",
             "REMOVE_INVOICE",
             "UPDATE_INVOICE_STATUS_TO_PAID",
             "UPDATE_INVOICE_STATUS_TO_PENDING",
+            "SET_CURRENT_INVOICE",
         ]),
 
         getCurrentInvoice() {

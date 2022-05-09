@@ -241,7 +241,7 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useCounterStore } from "../stores/counter";
 import { uid } from "uid";
 import { collection, updateDoc, addDoc, doc } from "firebase/firestore/lite";
@@ -318,10 +318,10 @@ export default {
     methods: {
         ...mapActions(useCounterStore, [
             "TOGGLE_MODAL",
-            "TOGGLE_NEW_INVOICE",
             "TOGGLE_EDIT_INVOICE",
             "UPDATE_INVOICE",
-            "GET_INVOICES",
+            "getInvoices",
+            "TOGGLE_NEW_INVOICE",
         ]),
 
         closeNewInvoice() {
@@ -409,7 +409,7 @@ export default {
 
             this.TOGGLE_NEW_INVOICE();
 
-            this.GET_INVOICES();
+            this.getInvoices();
         },
 
         async changeInvoice() {

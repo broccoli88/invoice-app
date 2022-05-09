@@ -21,28 +21,15 @@ export const useCounterStore = defineStore({
     editInvoice: null,
   }),
 
-  getters: {
-    UPDATE_STATUS_TO_PAID: (state, payload) => {
-      state.invoiceData.forEach((invoice) => {
-        if (invoice.docId === payload) {
-          invoice.invoicePaid = true;
-          invoice.invoicePending = false;
-        }
-      });
-    },
-
-    UPDATE_STATUS_TO_PENDING: (state, payload) => {
-      state.invoiceData.forEach((invoice) => {
-        if (invoice.docId === payload) {
-          invoice.invoicePaid = false;
-          invoice.invoicePending = true;
-          invoice.invoiceDraft = false;
-        }
-      });
-    },
-  },
+  getters: {},
 
   actions: {
+    DELETE_INVOICE(payload) {
+      this.invoiceData = this.invoiceData.filter((invoice) => {
+        return invoice.docId !== payload;
+      });
+    },
+
     TOGGLE_NEW_INVOICE() {
       this.newInvoice = !this.newInvoice;
     },
@@ -57,12 +44,35 @@ export const useCounterStore = defineStore({
       });
     },
 
+    TOGGLE_EDIT_INVOICE() {
+      this.editInvoice = !this.editInvoice;
+    },
+
     SET_INVOICE_DATA(payload) {
       this.invoiceData.push(payload);
     },
 
     INVOICES_LOADED() {
       this.dataLoaded = true;
+    },
+
+    UPDATE_STATUS_TO_PENDING(payload) {
+      this.invoiceData.forEach((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = false;
+          invoice.invoicePending = true;
+          invoice.invoiceDraft = false;
+        }
+      });
+    },
+
+    UPDATE_STATUS_TO_PAID(payload) {
+      this.invoiceData.forEach((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = true;
+          invoice.invoicePending = false;
+        }
+      });
     },
 
     async getInvoices() {
@@ -102,12 +112,6 @@ export const useCounterStore = defineStore({
       this.INVOICES_LOADED();
     },
 
-    DELETE_INVOICE(payload) {
-      this.invoiceData = this.invoiceData.filter((invoice) => {
-        invoice.docId !== payload;
-      });
-    },
-
     async UPDATE_INVOICE({ docId, routeId }) {
       this.DELETE_INVOICE(docId);
       await this.getInvoices();
@@ -116,15 +120,9 @@ export const useCounterStore = defineStore({
       this.SET_CURRENT_INVOICE(routeId);
     },
 
-    TOGGLE_EDIT_INVOICE() {
-      this.editInvoice = !this.editInvoice;
-    },
-
     async REMOVE_INVOICE(docId) {
-      const docRef = doc(db, "invoices", docId);
-      const getInvoice = await deleteDoc(docRef);
-
-      this.REMOVE_INVOICE(docId);
+      await deleteDoc(doc(db, "invoices", docId));
+      this.DELETE_INVOICE(docId);
     },
 
     async UPDATE_INVOICE_STATUS_TO_PAID(docId) {
@@ -133,7 +131,7 @@ export const useCounterStore = defineStore({
         invoicePaid: true,
         invoicePending: false,
       });
-      this.UPDATE_INVOICE_STATUS_TO_PAID(docId);
+      this.UPDATE_STATUS_TO_PAID(docId);
     },
 
     async UPDATE_INVOICE_STATUS_TO_PENDING(docId) {
@@ -143,8 +141,7 @@ export const useCounterStore = defineStore({
         invoicePending: true,
         invoiceDraft: false,
       });
-
-      this.UPDATE_INVOICE_STATUS_TO_PENDING(docId);
+      this.UPDATE_STATUS_TO_PENDING(docId);
     },
   },
 });

@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
 import { useCounterStore } from "../stores/counter";
+import { mapActions, mapState } from "pinia";
 
 export default {
     name: "modal",
@@ -31,8 +31,8 @@ export default {
     methods: {
         ...mapActions(useCounterStore, [
             "TOGGLE_MODAL",
-            "TOGGLE_NEW_INVOICE",
             "TOGGLE_EDIT_INVOICE",
+            "TOGGLE_NEW_INVOICE",
         ]),
 
         closeModal() {
@@ -41,7 +41,7 @@ export default {
 
         closeInvoice() {
             this.TOGGLE_MODAL();
-            this.TOGGLE_NEW_INVOICE();
+            this.store.TOGGLE_NEW_INVOICE();
             if (this.store.editInvoice) {
                 this.TOGGLE_EDIT_INVOICE();
             }

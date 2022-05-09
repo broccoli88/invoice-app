@@ -42,7 +42,7 @@
 
         <div v-if="store.invoiceData.length > 0">
             <Invoice
-                v-for="(invoice, index) in this.filteredData"
+                v-for="(invoice, index) in filteredData"
                 :key="index"
                 :invoice="invoice"
             />
