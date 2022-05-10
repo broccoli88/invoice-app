@@ -1,8 +1,7 @@
 <template>
     <div class="invoice-wrap flex-column" @click="checkClick" ref="invoiceWrap">
+        <Loading v-if="loading" />
         <form class="invoice-content" @submit.prevent="submitForm">
-            <Loading v-show="loading" />
-
             <h1 v-if="!store.editInvoice">New Invoice</h1>
             <h1 v-else>Edit Invoice</h1>
 
@@ -518,6 +517,13 @@ export default {
         0 2px 4px -1px rgba(0, 0, 0, 0.06);
     overflow-y: scroll;
 }
+
+/* .load {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+} */
 
 .bill-from,
 .bill-to {

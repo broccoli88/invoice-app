@@ -18,7 +18,11 @@
                             >: {{ filteredInvoice }}
                         </span></span
                     >
-                    <img src="../assets/icon-arrow-down.svg" alt="" />
+                    <img
+                        class="filter-arrow"
+                        src="../assets/icon-arrow-down.svg"
+                        alt=""
+                    />
                     <ul v-show="filterMenu" class="filter-menu">
                         <li @click="filteredInvoices">Draft</li>
                         <li @click="filteredInvoices">Pending</li>
@@ -132,6 +136,11 @@ export default {
     padding: 0.5em;
 }
 
+.filter-arrow {
+    width: auto;
+    height: 8px;
+}
+
 .filter-menu {
     padding: 0.5em;
     list-style: none;
@@ -139,6 +148,8 @@ export default {
     top: 100%;
     left: 0;
     width: 100%;
+
+    z-index: 20;
 }
 
 .filter-menu > li {

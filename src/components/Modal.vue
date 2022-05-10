@@ -18,7 +18,7 @@
 
 <script>
 import { useCounterStore } from "../stores/counter";
-import { mapActions, mapState } from "pinia";
+import { mapActions } from "pinia";
 
 export default {
     name: "modal",
@@ -64,7 +64,7 @@ export default {
     border-radius: 20px;
     padding: 48px 32px;
     max-width: 450px;
-    background-color: #252945;
+    background-color: var(--color-bg);
     color: #fff;
 }
 

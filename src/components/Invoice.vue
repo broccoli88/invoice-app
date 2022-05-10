@@ -87,4 +87,10 @@ export default {
     align-items: center;
     justify-content: center;
 }
+
+.icon {
+    display: flex;
+    height: fit-content;
+    width: fit-content;
+}
 </style> 

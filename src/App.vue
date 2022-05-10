@@ -113,6 +113,7 @@ export default {
     border-radius: 40px;
     color: var(--color-font);
     font-weight: 500;
+    font-size: 1.4rem;
     /* width: 10em; */
 
     align-items: center;
@@ -125,6 +126,8 @@ export default {
 
 .status-button {
     width: 10em;
+
+    font-weight: 600;
 
     padding: 0.2em 1.5em;
     border-radius: 10px;
@@ -142,7 +145,7 @@ export default {
 }
 
 .paid {
-    background-color: crimson;
+    background-color: hsl(115, 75%, 40%);
 }
 
 .draft {

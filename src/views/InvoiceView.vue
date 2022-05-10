@@ -48,7 +48,7 @@
                 <button
                     v-if="currentInvoice.invoicePending"
                     @click="updateStatusToPaid(currentInvoice.docId)"
-                    class="green button button--orange"
+                    class="button paid"
                 >
                     Mark as Paid
                 </button>
@@ -58,7 +58,7 @@
                         currentInvoice.invoicePaid
                     "
                     @click="updateStatusToPending(currentInvoice.docId)"
-                    class="orange"
+                    class="button pending"
                 >
                     Mark as Pending
                 </button>
@@ -341,6 +341,8 @@ export default {
     background-color: var(--color-secondary);
     align-items: center;
     border-radius: 0 0 2rem 2rem;
+
+    font-weight: 500;
 }
 
 .total p {
@@ -349,7 +351,7 @@ export default {
 }
 
 .total p:nth-child(2) {
-    font-size: 2.8rem;
+    font-size: 3.5rem;
     text-align: right;
 }
 </style>
