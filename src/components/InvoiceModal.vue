@@ -256,7 +256,7 @@ export default {
             store: useCounterStore(),
             dateOptions: { year: "numeric", month: "short", day: "numeric" },
             docId: null,
-            loading: true,
+            loading: false,
             billerStreetAddress: null,
             billerCity: null,
             billerZipCode: null,

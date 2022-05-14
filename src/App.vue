@@ -174,7 +174,6 @@ export default {
     transform: translateX(-700px);
 }
 
-
 .invoice-enter-active,
 .invoice-leave-active {
     transition: 0.8s ease all;
