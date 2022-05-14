@@ -1,7 +1,8 @@
 <template>
     <div class="invoice-wrap flex-column" @click="checkClick" ref="invoiceWrap">
-        <Loading v-if="loading" />
         <form class="invoice-content" @submit.prevent="submitForm">
+            <Loading v-show="loading" />
+            <div v-if="loading" class="loading">LOADING</div>
             <h1 v-if="!store.editInvoice">New Invoice</h1>
             <h1 v-else>Edit Invoice</h1>
 
@@ -240,7 +241,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "pinia";
+import { mapActions } from "pinia";
 import { useCounterStore } from "../stores/counter";
 import { uid } from "uid";
 import { collection, updateDoc, addDoc, doc } from "firebase/firestore/lite";
@@ -255,7 +256,7 @@ export default {
             store: useCounterStore(),
             dateOptions: { year: "numeric", month: "short", day: "numeric" },
             docId: null,
-            loading: null,
+            loading: true,
             billerStreetAddress: null,
             billerCity: null,
             billerZipCode: null,
@@ -478,17 +479,18 @@ export default {
 
 <style scoped>
 .invoice-wrap {
-    /* max-width: 700px; */
+    max-width: 700px;
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
     background-color: transparent;
-    height: 100vh;
+    min-height: 100vh;
     z-index: 10;
 }
 
 .invoice-wrap h1 {
+    margin-top: 5rem;
     margin-bottom: 48px;
     color: white;
 }
@@ -506,11 +508,12 @@ export default {
 }
 
 .invoice-content {
+    box-sizing: border-box;
     width: 100%;
     max-width: 700px;
     position: relative;
     padding: 56px;
-    height: 100vh;
+    /* height: 100vh; */
     background-color: var(--color-secondary);
     color: #fff;
     box-shadow: 10px 4px 6px -1px rgba(0, 0, 0, 0.2),

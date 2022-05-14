@@ -143,5 +143,9 @@ export const useCounterStore = defineStore({
       });
       this.UPDATE_STATUS_TO_PENDING(docId);
     },
+
+    // GET_ENV() {
+    //   console.log(process.env.FIRESTORE_API_KEY);
+    // },
   },
 });

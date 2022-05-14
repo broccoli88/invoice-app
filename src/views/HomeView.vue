@@ -4,7 +4,7 @@
 
         <div class="header flex">
             <div class="left flex-column">
-                <h1>Invoices</h1>
+                <h1 @click="loadEnv">Invoices</h1>
                 <span
                     >There are total of
                     {{ store.invoiceData.length }} invoices</span

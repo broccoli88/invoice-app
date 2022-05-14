@@ -172,8 +172,8 @@ export default {
 .invoice-enter-from,
 .invoice-leave-to {
     transform: translateX(-700px);
-    opacity: 0.2;
 }
+
 
 .invoice-enter-active,
 .invoice-leave-active {

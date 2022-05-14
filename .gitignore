@@ -29,3 +29,7 @@ firebase/*
 *.sln
 *.sw?
 
+#api key
+
+.env
+

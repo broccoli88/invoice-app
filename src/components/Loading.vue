@@ -12,13 +12,14 @@ export default {
 
 <style scoped>
 .loading {
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 101;
     height: 100%;
     width: 100%;
+    max-width: 700px;
     background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
