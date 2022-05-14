@@ -14,6 +14,7 @@ export default {
 
 <style>
 header {
+    position: fixed;
     width: 100%;
     background-color: var(--color-primary);
     z-index: 9999;
