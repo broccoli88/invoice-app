@@ -2,7 +2,6 @@
     <div class="invoice-wrap flex-column" @click="checkClick" ref="invoiceWrap">
         <form class="invoice-content" @submit.prevent="submitForm">
             <Loading v-show="loading" />
-            <div v-if="loading" class="loading">LOADING</div>
             <h1 v-if="!store.editInvoice">New Invoice</h1>
             <h1 v-else>Edit Invoice</h1>
 
@@ -256,7 +255,7 @@ export default {
             store: useCounterStore(),
             dateOptions: { year: "numeric", month: "short", day: "numeric" },
             docId: null,
-            loading: false,
+            loading: null,
             billerStreetAddress: null,
             billerCity: null,
             billerZipCode: null,
