@@ -29,7 +29,7 @@ export default {
     components: { NavBar, InvoiceModal, Modal },
     data() {
         return {
-            mobile: true,
+            mobile: null,
             store: useCounterStore(),
         };
     },

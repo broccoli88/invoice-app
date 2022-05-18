@@ -478,13 +478,13 @@ export default {
 
 <style scoped>
 .invoice-wrap {
-    max-width: 700px;
+    /* max-width: 700px; */
     width: 100%;
+    height: 100%;
     position: fixed;
     top: 0;
     left: 0;
     background-color: transparent;
-    height: 100vh;
     z-index: 10;
 }
 
@@ -512,20 +512,13 @@ export default {
     max-width: 700px;
     position: relative;
     padding: 56px;
-    /* height: 100vh; */
+
     background-color: var(--color-secondary);
     color: #fff;
     box-shadow: 10px 4px 6px -1px rgba(0, 0, 0, 0.2),
         0 2px 4px -1px rgba(0, 0, 0, 0.06);
     overflow-y: scroll;
 }
-
-/* .load {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    bottom: 0;
-} */
 
 .bill-from,
 .bill-to {
